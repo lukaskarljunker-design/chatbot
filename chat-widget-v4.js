@@ -214,6 +214,26 @@
     widgetContainer.className = 'n8n-chat-widget';
     document.body.appendChild(widgetContainer);
 
+    // ---- Force brand colors (inline CSS variables win) ----
+function applyBrandColors() {
+  const cfg = window.ChatWidgetConfig || {};
+  const styleCfg = cfg.style || {};
+  const brandCfg = (cfg.branding && cfg.branding.colors) || {};
+
+  const primary   = styleCfg.primaryColor   || brandCfg.primary   || '#F6C23E';
+  const secondary = styleCfg.secondaryColor || brandCfg.secondary || '#F29F05';
+  const border    = styleCfg.borderColor    || brandCfg.border    || '#FFD977';
+
+  widgetContainer.style.setProperty('--chat--color-primary',   primary);
+  widgetContainer.style.setProperty('--chat--color-secondary', secondary);
+  widgetContainer.style.setProperty('--chat--color-border',    border);
+}
+
+// gleich anwenden – und nochmal „am Ende des Ticks“, falls anderes Script später lädt
+applyBrandColors();
+setTimeout(applyBrandColors, 0);
+
+
     // Bridge: HTML-Config -> CSS-Variablen
 const styleCfg = window.ChatWidgetConfig?.style || {};
 if (styleCfg.primaryColor)
