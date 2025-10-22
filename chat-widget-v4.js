@@ -261,7 +261,7 @@ function showNudge(msg) {
   nudgeEl = document.createElement('div');
   nudgeEl.className = 'chat-nudge';
   nudgeEl.textContent = msg;
-  document.body.appendChild(nudgeEl);
+  widgetContainer.appendChild(nudgeEl);
   // nach 6s automatisch verschwinden lassen
   setTimeout(() => { if (nudgeEl) { nudgeEl.remove(); nudgeEl = null; } }, 6000);
 }
