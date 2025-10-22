@@ -213,6 +213,16 @@
     widgetContainer.className = 'n8n-chat-widget';
     document.body.appendChild(widgetContainer);
 
+    // Apply brand colors from ChatWidgetConfig (if provided)
+const brandColors = window.ChatWidgetConfig?.branding?.colors || {};
+if (brandColors.primary)
+  widgetContainer.style.setProperty('--chat--color-primary', brandColors.primary);
+if (brandColors.secondary)
+  widgetContainer.style.setProperty('--chat--color-secondary', brandColors.secondary);
+if (brandColors.border)
+  widgetContainer.style.setProperty('--chat--color-border', brandColors.border);
+
+
     // Chat toggle (FAB)
     const toggleButton = document.createElement('button');
     toggleButton.className = 'chat-toggle';
