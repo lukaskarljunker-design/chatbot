@@ -78,17 +78,24 @@
             position: relative;
         }
         .n8n-chat-widget .mascot {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-            margin-right: 8px;
-        }
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  margin-right: 8px;
+}
+
+.n8n-chat-widget .mascot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
         .n8n-chat-widget .brand-header span {
             font-size: 22px;
             font-weight: 700;
@@ -257,15 +264,23 @@ if (styleCfg.borderColor)
     chatContainer.className = 'chat-container';
     widgetContainer.appendChild(chatContainer);
 
-    // Brand header with mascot
-    const brandHeader = document.createElement('div');
-    brandHeader.className = 'brand-header';
-    brandHeader.innerHTML = `
-        <div class="mascot" title="Mascot">🤖</div>
-        <span>ChatBot</span>
-        <button class="close-button" aria-label="Close chat">×</button>
-    `;
-    chatContainer.appendChild(brandHeader);
+    // Brand header with mascot (dynamic branding)
+const brandHeader = document.createElement('div');
+brandHeader.className = 'brand-header';
+
+const name = window.ChatWidgetConfig?.branding?.name || 'Smashy';
+const logo = window.ChatWidgetConfig?.branding?.logo || 'https://assets.cockpit.coco.one/3091761136453-PnBxFwqZ/untitled-design-2.png';
+
+brandHeader.innerHTML = `
+  <div class="mascot" title="${name}">
+    <img src="${logo}" alt="${name}" />
+  </div>
+  <span>${name}</span>
+  <button class="close-button" aria-label="Close chat">×</button>
+`;
+
+chatContainer.appendChild(brandHeader);
+
 
     // Chat messages area
     const messagesContainer = document.createElement('div');
