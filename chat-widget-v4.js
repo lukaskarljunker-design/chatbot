@@ -326,7 +326,7 @@ const nudgeTimer = setTimeout(() => {
     const chatInput = document.createElement('div');
     chatInput.className = 'chat-input';
     chatInput.innerHTML = `
-        <textarea placeholder="Type your message..." rows="1"></textarea>
+        <textarea placeholder="Nachricht eingeben..." rows="1"></textarea>
         <button type="submit" aria-label="Send message">➤</button>
     `;
     chatContainer.appendChild(chatInput);
