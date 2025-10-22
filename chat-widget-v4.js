@@ -81,12 +81,12 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ffb86b 0%, #ff6bcb 100%);
+            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 32px;
-            box-shadow: 0 2px 8px rgba(255,107,203,0.12);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
             margin-right: 8px;
         }
         .n8n-chat-widget .brand-header span {
@@ -167,7 +167,7 @@
             transition: border 0.2s;
         }
         .n8n-chat-widget .chat-input textarea:focus {
-            border: 1.5px solid #ff6bcb;
+            border: 1.5px solid var(--chat--color-primary);
         }
         .n8n-chat-widget .chat-input button {
             background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
@@ -191,8 +191,8 @@
   padding: 12px 14px;
   border-radius: 14px;
   background: #ffffff;
-  border: 1px solid #ffd3ea;
-  box-shadow: 0 6px 24px rgba(115,103,240,0.18);
+  border: 1px solid var(--chat--color-border);   
+  box-shadow: 0 10px 32px rgba(0,0,0,0.12);
   color: #232946;
   font-size: 14px;
   z-index: 1001;
