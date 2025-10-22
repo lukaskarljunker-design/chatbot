@@ -182,6 +182,22 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
+       .n8n-chat-widget .chat-nudge {
+  position: fixed;
+  right: 120px;         /* neben dem runden Button */
+  bottom: 40px;
+  max-width: 260px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #ffd3ea;
+  box-shadow: 0 6px 24px rgba(115,103,240,0.18);
+  color: #232946;
+  font-size: 14px;
+  z-index: 1001;
+  animation: bubbleIn 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
         .n8n-chat-widget .chat-input button:hover {
             transform: scale(1.08);
         }
@@ -225,6 +241,41 @@
     messagesContainer.className = 'chat-messages';
     chatContainer.appendChild(messagesContainer);
 
+    // ---- Helpers: Bot-Bubble + Nudge ----
+function pushBot(text) {
+  const botDiv = document.createElement('div');
+  botDiv.className = 'chat-message bot';
+  botDiv.textContent = text;
+  messagesContainer.appendChild(botDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Begrüßungstexte (konfigurierbar, mit Fallbacks)
+const welcomeNudge  = (window.ChatWidgetConfig?.branding?.nudgeText)  || 'Hallo, ich kann dir helfen!';
+const welcomeOpen   = (window.ChatWidgetConfig?.branding?.welcomeText) || 'Hallo, ich bin Smashy, der Verbandschatbot – wie kann ich dir heute helfen?';
+
+// Nudge neben dem Toggle anzeigen
+let nudgeEl = null;
+function showNudge(msg) {
+  if (nudgeEl) return; // nur einmal
+  nudgeEl = document.createElement('div');
+  nudgeEl.className = 'chat-nudge';
+  nudgeEl.textContent = msg;
+  document.body.appendChild(nudgeEl);
+  // nach 6s automatisch verschwinden lassen
+  setTimeout(() => { if (nudgeEl) { nudgeEl.remove(); nudgeEl = null; } }, 6000);
+}
+function hideNudge() {
+  if (nudgeEl) { nudgeEl.remove(); nudgeEl = null; }
+}
+
+// Nach 10s ohne Interaktion Nudge zeigen
+let hasOpened = false;
+const nudgeTimer = setTimeout(() => {
+  if (!hasOpened) showNudge(welcomeNudge);
+}, 10000);
+
+
     // Chat input area
     const chatInput = document.createElement('div');
     chatInput.className = 'chat-input';
@@ -236,8 +287,22 @@
 
     // Show/hide chat
     toggleButton.addEventListener('click', () => {
-        chatContainer.classList.toggle('open');
-    });
+  const willOpen = !chatContainer.classList.contains('open');
+  chatContainer.classList.toggle('open');
+
+  if (willOpen) {
+    hasOpened = true;
+    clearTimeout(nudgeTimer);
+    hideNudge();
+
+    // Initialnachricht nur beim ersten Öffnen hinzufügen
+    if (!chatContainer.dataset.welcomed) {
+      pushBot(welcomeOpen);
+      chatContainer.dataset.welcomed = '1';
+    }
+  }
+});
+
     brandHeader.querySelector('.close-button').addEventListener('click', () => {
         chatContainer.classList.remove('open');
     });
