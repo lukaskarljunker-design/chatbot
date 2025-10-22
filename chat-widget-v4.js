@@ -9,13 +9,14 @@
     // Creative, glassmorphic, circular styles
     const styles = `
         .n8n-chat-widget {
-            --chat--color-primary: #ff6bcb;
-            --chat--color-secondary: #7367f0;
-            --chat--color-glass: rgba(255,255,255,0.7);
-            --chat--color-glass-blur: blur(16px);
-            --chat--color-font: #232946;
-            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
+    --chat--color-primary: #F6C23E;      /* Gelb */
+    --chat--color-secondary: #F29F05;    /* Orange */
+    --chat--color-border: #FFD977;       /* heller Rahmen */
+    --chat--color-glass: rgba(255,255,255,0.8);
+    --chat--color-glass-blur: blur(16px);
+    --chat--color-font: #232946;
+    font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
         .n8n-chat-widget .chat-toggle {
             position: fixed;
             bottom: 32px;
@@ -130,7 +131,7 @@
             animation: bubbleIn 0.4s cubic-bezier(.68,-0.55,.27,1.55);
         }
         .n8n-chat-widget .chat-message.user {
-            background: linear-gradient(135deg, #7367f0 0%, #ff6bcb 100%);
+            background: linear-gradient(135deg, var(--chat--color-secondary) 0%, var(--chat--color-primary) 100%);
             color: #fff;
             align-self: flex-end;
         }
@@ -138,7 +139,7 @@
             background: var(--chat--color-glass);
             color: var(--chat--color-font);
             align-self: flex-start;
-            border: 1.5px solid #ffb6b6;
+            border: 1.5px solid var(--chat--color-border);
         }
         @keyframes bubbleIn {
             0% { transform: scale(0.8) translateY(20px); opacity: 0; }
@@ -169,7 +170,7 @@
             border: 1.5px solid #ff6bcb;
         }
         .n8n-chat-widget .chat-input button {
-            background: linear-gradient(135deg, #ff6bcb 0%, #7367f0 100%);
+            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
             color: white;
             border: none;
             border-radius: 50%;
@@ -212,16 +213,6 @@
     const widgetContainer = document.createElement('div');
     widgetContainer.className = 'n8n-chat-widget';
     document.body.appendChild(widgetContainer);
-
-    // Apply brand colors from ChatWidgetConfig (if provided)
-const brandColors = window.ChatWidgetConfig?.branding?.colors || {};
-if (brandColors.primary)
-  widgetContainer.style.setProperty('--chat--color-primary', brandColors.primary);
-if (brandColors.secondary)
-  widgetContainer.style.setProperty('--chat--color-secondary', brandColors.secondary);
-if (brandColors.border)
-  widgetContainer.style.setProperty('--chat--color-border', brandColors.border);
-
 
     // Chat toggle (FAB)
     const toggleButton = document.createElement('button');
