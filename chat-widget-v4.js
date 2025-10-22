@@ -242,21 +242,79 @@
         chatContainer.classList.remove('open');
     });
 
-    // Send message logic (placeholder, to be expanded)
-    const textarea = chatInput.querySelector('textarea');
-    const sendButton = chatInput.querySelector('button');
-    sendButton.addEventListener('click', () => {
-        const message = textarea.value.trim();
-        if (message) {
-            const userMessageDiv = document.createElement('div');
-            userMessageDiv.className = 'chat-message user';
-            userMessageDiv.textContent = message;
-            messagesContainer.appendChild(userMessageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            textarea.value = '';
-            // TODO: Add bot response, mascot animation, etc.
-        }
+// ---- SEND LOGIK ----
+
+// Lies die Chatbot-Konfiguration aus window.ChatWidgetConfig
+const cfg = window.ChatWidgetConfig?.webhook || {};
+const base = (cfg.url || '').replace(/\/$/, '');
+const route = cfg.route ? '/' + cfg.route.replace(/^\//,'') : '';
+const ENDPOINT = base + route;
+
+// Prüfe, ob ein Endpoint gesetzt ist
+if (!ENDPOINT) {
+  console.error('[ChatWidget] Kein ENDPOINT konfiguriert. Setze window.ChatWidgetConfig.webhook.url + route.');
+}
+
+const textarea = chatInput.querySelector('textarea');
+const sendButton = chatInput.querySelector('button');
+
+async function sendMessage() {
+  const message = textarea.value.trim();
+  if (!message) return;
+
+  // Nutzer-Nachricht anzeigen
+  const userDiv = document.createElement('div');
+  userDiv.className = 'chat-message user';
+  userDiv.textContent = message;
+  messagesContainer.appendChild(userDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  textarea.value = '';
+
+  // Platzhalter für Antwort
+  const typing = document.createElement('div');
+  typing.className = 'chat-message bot';
+  typing.textContent = '...';
+  messagesContainer.appendChild(typing);
+
+  try {
+    // Nachricht an n8n senden
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message })
     });
+    const text = await res.text();
+    typing.remove();
+
+    const botDiv = document.createElement('div');
+    botDiv.className = 'chat-message bot';
+    // Falls n8n JSON { reply: "..." } sendet:
+    try {
+      const json = JSON.parse(text);
+      botDiv.textContent = json.reply ?? text;
+    } catch {
+      botDiv.textContent = text;
+    }
+    messagesContainer.appendChild(botDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  } catch (e) {
+    typing.remove();
+    console.error('[ChatWidget] Fehler beim Senden:', e);
+    const errDiv = document.createElement('div');
+    errDiv.className = 'chat-message bot';
+    errDiv.textContent = '⚠️ Netzwerkfehler oder Server nicht erreichbar.';
+    messagesContainer.appendChild(errDiv);
+  }
+}
+
+sendButton.addEventListener('click', sendMessage);
+textarea.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+    
     textarea.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
